@@ -2,6 +2,7 @@ package it.polito.tdp.ruzzle;
 
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -90,7 +91,32 @@ public class FXMLController {
 
     @FXML
     void handleProva(ActionEvent event) {
-
+    	//Refresh interfaccia grafica
+    	for(Button b : letters.values())
+    		b.setDefaultButton(false);
+    	
+    	String parola = txtParola.getText();
+    	
+    	if(parola.length()<=1) {
+    		this.txtResult.setText("Devi inserire parole di almeno 2 parole\n");
+    		return;
+    	}
+    	parola = parola.toUpperCase();
+    	
+    	if(!parola.matches("[A-Z]+")) { //Se non matcha solo caratteri alfabetici (il + sta per il piu' di 1 carattere)
+    		this.txtResult.setText("Devi inserire solo caratteri alfabetici\n");
+    		return;
+    	}
+    	
+    	List<Pos> percorso = model.trovaParola(parola);
+    	
+    	if(percorso!=null) {
+    		for(Pos p : percorso) {
+    			letters.get(p).setDefaultButton(true);
+    		}
+    	}
+    	else
+    		txtResult.setText("Parola non trovata\n");
     }
 
     @FXML
@@ -100,7 +126,14 @@ public class FXMLController {
     
     @FXML
     void handleRisolvi(ActionEvent event) {
-
+    	List<String> tutte = model.trovaTutte();
+    	
+    	this.txtResult.clear();
+    	this.txtResult.appendText(String.format("Ho trovato %d soluzioni.\n", tutte.size()));
+    	
+    	for(String s : tutte)
+    		this.txtResult.appendText(s + "\n");
+    	
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -153,8 +186,10 @@ public class FXMLController {
     	this.letters.put(new Pos(3,2), let32) ;
     	this.letters.put(new Pos(3,3), let33) ;
 
-    	for(Pos cell: m.getBoard().getPositions()) {
+    	for(Pos cell: m.getBoard().getPositions()) { //Per ogni bottone della mappa con le lettere appena creata
     		this.letters.get(cell).textProperty().bind(m.getBoard().getCellValueProperty(cell));
+    		//Prende la textProperty del bottone e ne fa il binding con la StringProperty di ogni casella nella classe Board
+    		//Ogni volta che cambia la StringProperty nella classe board cambia automaticamente nell'interfaccia
     	}
     	
     	this.txtStatus.textProperty().bind(m.statusTextProperty());

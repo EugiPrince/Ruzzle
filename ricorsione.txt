@@ -1,0 +1,46 @@
+1. Bisogna capire prima di tutto se una parola scritta da noi è presente nella nostra griglia. So quali sono tutte le
+possibili parole valide, cioè quelle del dizionario... basta che cerco fra queste quali sono presenti nella griglia.
+
+Il passo ricorsivo è quello di capire se una parola è presente oppure no nella griglia -> Efficiente? Non il migliore
+
+2. Provare tutti i possibili percorsi sulla griglia. Cioè per ogni lettera mi chiedo, esiste una parola tipo D? Poi
+iniziano parole che iniziano con D? ...
+
+Implementiamo il PRIMO approccio:
+
+Problema:
+	Stringa da riconoscere 'parola' (è un input)
+	Contenuto della Board (è un input)
+	Posizione della lettera iniziale
+	
+Soluzione parziale:
+	Parte iniziale della parola, ovvero la parte già riconosciuta
+	Elenco delle posizioni in cui si trovano le lettere già riconosciute, così da visualizzare velocemente la parola
+	e per indicare che una lettera è già stata utilizzata, non ci posso più tornare sopra
+	
+Soluzione totale:
+	Parola completamente riconosciuta
+	Elenco di posizioni per comporre la parola completa
+	
+Livello:
+	Numero di caratteri già riconosciuti.. ad ogni livello aggiungo un carattere, se rispetta determinate regole
+	significa anche il livello di ricorsione a cui sono arrivato
+	
+Condizione di terminazione:
+	Quando il livello è uguale alla lunghezza della parola
+	Inoltre non è un problema di ottimizzazione, quindi se trovo la parola ho finito, non importa se compare più volte
+	e ci sono più percorsi possibili, se la soluzione è trovata, qualsiasi essa sia, va bene così
+	
+Generazione delle soluzioni (a ogni passo):
+	A ogni passo sto considerando una lettera, generare le prossime soluzioni parziali significa trovare tutte le
+	lettere adiacenti all'ultima posizione usata e verificare che tra queste ci sia la lettera corretta e infine
+	verificare che queste posizioni non siano ancora utilizzate
+	
+Avvio della ricorsione:
+	Partiamo dalla prima lettera della matrice, quindi parto da 1 soluzione parziale già (sono già a livello 1)
+	Parte da una posizione che contiene la prima lettera della parola
+	
+Strutture dati:
+	String per memorizzare la 'parola'
+	Livello
+	Elenco di posizioni per il percorso -> List<Pos> percorso corrispondente alla sequenza di caselle
